@@ -1,19 +1,26 @@
 //GET
-async function ajaxGET(url,callback){
-    const xhr = await new XMLHttpRequest();
-    xhr.onreadystatechange = function(){
+  async function ajaxGET(url,send_request,element,callback){
+    const prepare_data = {};
+    for(let i=0; i<elements.length;i++){
+      prepare_data[send_request[i]] = $(elements[i]).val();
+    }
+
+    const XHR = await new XMLHttpRequest();
+    XHR.onreadystatechange = function(){
+    XHR.setRequestHeader("Content-Type", "application/json");
         if(this.readyState == 4 && this.status == 200){
-            callback(this.responseText);
+            callback(elements,this.responseText);
         }
     };
-    xhr.open("GET",url,true);
-    xhr.send(JSON.stringify(dataset));
+    XHR.open("GET",url,true);
+    XHR.send(JSON.stringify(prepare_data));
 }
 
 
 //POST
 async function ajaxPOST(url,callback){
     const xhr = await new XMLHttpRequest();
+    xhr.onreadystatechange = function(){
     xhr.setRequestHeader("Content-Type", "application/json");
     if(this.readyState == 4 && this.status == 200){
         callback(this.responseText);
