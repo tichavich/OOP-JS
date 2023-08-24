@@ -40,48 +40,47 @@ async function ajaxPOST(url,callback){
     }
   }
 
-  const ajaxGetAdd = (url, sendReq,elements, callback) => {
-    const prepare_data = {};
-    for(let i=0; i<elements.length;i++){
-      prepare_data[sendReq[i]] = $(elements[i]).val();
-    }
-    $.ajax({
-      url: url,
-      method: "GET",
-      data: prepare_data,
-      success: function(res) {
-        callback(elements,res);
+    const ajaxAdd = (url, type_method, params, elements, callback) => {
+      const prepare_data = {};
+      for (let i = 0; i < elements.length; i++) {
+        prepare_data[params[i]] = $(elements[i]).val();
       }
-    });
-  }
-
-  const responseState = (ele,state) => {
-    if (state === '1') {
-      Swal.fire({
-        icon: 'warning',
-        html: 'ไม่สามารถบันทึกค่าซ้ำได้<br>โปรดตรวจสอบข้อมูลอีกครั้ง',
-      });
-    } else{
-      const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.addEventListener('mouseenter', Swal.stopTimer)
-          toast.addEventListener('mouseleave', Swal.resumeTimer)
+      $.ajax({
+        url: url,
+        method: type_method,
+        data: prepare_data,
+        success: function(res) {
+          callback(elements, res);
+        },
+        error: (err) => {
+          console.log(err);
         }
       });
-
-      Toast.fire({
-        icon: 'success',
-        title: 'บันทึกข้อมูลเรียบร้อย'
-      });
     }
 
-    //reset all input
-    ele.forEach((element_name)=>{
-      $(element_name).val('');
-    });
-  }
+    const responseState = (ele, state) => {
+      if (state === '1') {
+        Swal.fire({
+          icon: 'warning',
+          title: 'แจ้งเตือน',
+          html: 'ไม่สามารถบันทึกค่าซ้ำได้.....โปรดตรวจสอบข้อมูลอีกครั้ง',
+        });
+      } else {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        });
+
+        Toast.fire({
+          icon: 'success',
+          title: 'บันทึกข้อมูลเรียบร้อย'
+        });
+      }
+
